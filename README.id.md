@@ -6,27 +6,22 @@
 ## Arsitektur Sistem
 Aplikasi ini menggunakan arsitektur **Clean Modular**:
 - **Frontend (UI)**: Dibangun dengan React + Tailwind CSS (ada di `App.tsx`).
-- **Core Engine (Backend-Logic)**: Seluruh perhitungan biofisika dipisahkan ke dalam `physics-kernel.ts`. Ini memungkinkan mesin simulasi untuk diuji secara independen atau dipindahkan ke server Node.js di masa depan.
-
-## Fitur Utama
-- **Input Sequence**: Analisis sekuens RNA 5' ke 3'.
-- **Environmental Tuning**: Simulasi kondisi *in-vitro* dengan menyesuaikan Mg²⁺, suhu, dan *crowding index*.
-- **JAX-Inspired Kernel**: Optimasi energi bebas Gibbs (ΔG) berbasis gradien teoretis yang dijalankan secara lokal di browser.
+- **Core Engine (Backend-Logic)**: Seluruh perhitungan biofisika dipisahkan ke dalam `physics-kernel.ts`. Ini memungkinkan mesin simulasi untuk diuji secara independen atau dipindahkan ke server di masa depan.
 
 ## Cara Menjalankan Aplikasi
 
-### Prasyarat
-Pastikan Anda telah menginstal [Node.js](https://nodejs.org/) (versi 18 atau lebih baru).
+### 1. Lingkungan Pengembangan (Frontend + Kernel)
+Untuk menjalankan aplikasi secara utuh dengan antarmuka grafis:
+```bash
+# Instal dependensi
+npm install
 
-### Langkah Instalasi
-1. **Instal Dependensi**
-   ```bash
-   npm install
-   ```
-2. **Jalankan Server Pengembangan**
-   ```bash
-   npm run dev
-   ```
+# Jalankan server pengembangan
+npm run dev
+```
+
+### 2. Pengujian Mesin (Kernel Only)
+Karena logika backend berada di `physics-kernel.ts`, Anda dapat mengimpor fungsi `performBiophysicalSimulation` ke dalam skrip pengujian atau lingkungan Node.js tanpa perlu menjalankan UI.
 
 ## Metodologi Komputasi
 Kernel di `physics-kernel.ts` menggunakan model **Coarse-Grained**:
