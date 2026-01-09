@@ -1,35 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Terminal, Activity, Zap, Microscope, ShieldCheck, RefreshCw, 
-  Target, Thermometer, Waves, AlertTriangle, Sparkles, 
-  Scissors, Layers, Split, ChevronRight, CircleDot, Wind,
-  Box, TrendingUp, Radio, Droplets, Music, Infinity, Atom, Stars, Rocket, Cpu, Binary, Gauge, ZapOff,
-  Combine, Download, FileJson, Info, BookOpen, Scale, HelpCircle, Code, BarChart3
+  Activity, Microscope, ShieldCheck, RefreshCw, 
+  BookOpen, Scale, HelpCircle, Code, BarChart3, Download, Info
 } from 'lucide-react';
-
-interface SimulationResult {
-  sequence: string;
-  energy: number;
-  cleavageRate: number; 
-  efficiencyLabel: 'LOW' | 'MEDIUM' | 'HIGH' | 'EXTREME' | 'QUANTUM_SYNC';
-  timestamp: string;
-  auditGranular: {
-    activeStatePop: number;
-    productAffinity: number;
-    releaseRate: number;
-    vibrationalCoherence: number; 
-    resonanceSync: number;
-    entropyRecovery: number;
-    warpFactor: number;
-    sweetSpotProgress: number;
-    gibbsEnergy: number; 
-    diffusionLimit: number;
-    tunnelingProbability: number;
-    stackingStability: number;
-    ionSaturation: number;
-  };
-  suggestion?: string;
-}
+import { performBiophysicalSimulation, SimulationResult } from './physics-kernel';
 
 const App: React.FC = () => {
   const [inputSequence, setInputSequence] = useState('GGGCGACUGAAGCGCCC');
@@ -67,83 +41,15 @@ const App: React.FC = () => {
     addLog("Audit exported as JSON for post-processing.", "success");
   };
 
-  const performSimulation = (seq: string): SimulationResult => {
-    const cleanSeq = seq.toUpperCase();
-    const len = cleanSeq.length;
-    const gc = (cleanSeq.match(/[GC]/g) || []).length / len;
-    const tempK = temp + 273.15;
-    const R = 0.001987; 
-    const RT = R * tempK; 
-
-    const stacking = Math.abs(gc * 22.5 + (1-gc) * 12.2);
-    const viscosity = Math.exp(crowding * 0.045);
-    const k_diffusion = (8 * R * tempK) / (3000 * viscosity) * 1e8; 
-
-    const K_half_mg = 5.0; 
-    const n_hill = 2.4; 
-    const ion_effect = Math.pow(mgConc, n_hill) / (Math.pow(K_half_mg, n_hill) + Math.pow(mgConc, n_hill));
-    const mg_inhibition = mgConc > 30 ? 1 / (1 + (mgConc - 30) * 0.05) : 1.0;
-
-    const deltaH = -stacking; 
-    const deltaS = -(0.055 + (crowding / 100) * 0.18); 
-    const gibbsClassic = deltaH - (tempK * deltaS);
-    
-    const synergy = (crowding / 100) * (temp / 90) * ion_effect;
-    const syncThreshold = 0.7;
-    const warpTrigger = synergy > syncThreshold ? Math.pow((synergy - syncThreshold) * 20 + 1, 3.5) : 1.0;
-    
-    const productAffinity = Math.max(0.05, Math.abs(gibbsClassic) / (1 + synergy * warpTrigger));
-    const k_off = ( (R * tempK) / 6.626e-34 ) * Math.exp(-productAffinity / RT) * 1e-13 * (1 + synergy * 15);
-    
-    const coherence = Math.exp(-(gc * 3.0)) / (1 + Math.pow(tempK / 325, 20) * 0.02);
-    const k_cat_raw = 15000 * coherence * ion_effect * mg_inhibition * warpTrigger;
-    
-    const k_internal = (k_cat_raw * k_off) / (k_cat_raw + k_off + 1e-10);
-    const k_obs = 1 / ( (1/k_internal) + (1/k_diffusion) );
-    
-    const progress = Math.min(100, (k_obs / (k_diffusion * 0.0008)) * 100);
-
-    let label: SimulationResult['efficiencyLabel'] = 'LOW';
-    if (progress > 99) label = 'QUANTUM_SYNC';
-    else if (progress > 85) label = 'EXTREME';
-    else if (k_obs > 8.0) label = 'HIGH';
-    else if (k_obs > 2.0) label = 'MEDIUM';
-
-    return {
-      sequence: cleanSeq,
-      energy: -productAffinity,
-      cleavageRate: k_obs,
-      timestamp: new Date().toLocaleTimeString(),
-      efficiencyLabel: label,
-      auditGranular: {
-        activeStatePop: warpTrigger,
-        productAffinity: productAffinity,
-        releaseRate: k_off,
-        vibrationalCoherence: coherence,
-        resonanceSync: synergy,
-        entropyRecovery: synergy * 100,
-        warpFactor: warpTrigger,
-        sweetSpotProgress: progress,
-        gibbsEnergy: gibbsClassic,
-        diffusionLimit: k_diffusion,
-        tunnelingProbability: 1e-7 * coherence * warpTrigger,
-        stackingStability: stacking,
-        ionSaturation: ion_effect * mg_inhibition
-      },
-      suggestion: label === 'QUANTUM_SYNC' 
-        ? "Resonansi tumpukan maksimal terdeteksi. Estimasi transisi tunneling tinggi." 
-        : mgConc > 35 
-          ? "Hambatan ionik terdeteksi. Kejenuhan Mg2+ mengurangi fleksibilitas backbone."
-          : "Limit stokastik terdeteksi. Barrier aktivasi tetap menjadi bottleneck kinetik utama."
-    };
-  };
-
   const handleRun = () => {
     if(!isValid) return;
     setIsSimulating(true);
     addLog("Initializing JAX-Derivative Physics Kernel...", "info");
+    
+    // Simulating computational delay to show backend process
     setTimeout(() => {
-      setCurrentResult(performSimulation(inputSequence));
+      const result = performBiophysicalSimulation(inputSequence, mgConc, temp, crowding);
+      setCurrentResult(result);
       setIsSimulating(false);
       addLog("Biophysical audit generated successfully.", "success");
     }, 1200);
