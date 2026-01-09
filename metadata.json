@@ -1,0 +1,5 @@
+{
+  "name": "RNA-Navigator Pro: Biophysical Suite",
+  "description": "An academic-grade simulation toolkit for RNA tertiary stability and kinetic flux analysis, powered by JAX-inspired differentiable physics logic.",
+  "requestFramePermissions": []
+}
