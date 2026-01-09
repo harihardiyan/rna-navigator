@@ -59,5 +59,5 @@
 ---
 
 ## License
-Distributed under the **MIT License**.
+Distributed under the [MIT License](LICENSE).
 *Developed for the OpenRNA Initiative. Reference Framework: JAX-RNA-BIOPHYS-28*
