@@ -8,6 +8,35 @@
 - **環境調節**: 通過調節鎂離子 (Mg²⁺) 飽和度、溫度和大分子擁擠指數來模擬體外或體內環境。
 - **JAX 核心執行**: 基於理論梯度的吉布斯自由能 (ΔG) 優化引擎。
 
+## 如何運行
+
+### 系統要求
+請確保您的系統已安裝 [Node.js](https://nodejs.org/)（版本 18 或更高）。
+
+### 安裝步驟
+1. **複製存儲庫**
+   ```bash
+   git clone https://github.com/username/rna-navigator-pro.git
+   cd rna-navigator-pro
+   ```
+
+2. **安裝依賴項目**
+   ```bash
+   npm install
+   ```
+
+3. **啟動開發伺服器**
+   ```bash
+   npm run dev
+   ```
+   應用程序將在 `http://localhost:5173` 運行。
+
+### 使用指南
+1. 在 **Sequencing_Input** 欄位中輸入 RNA 序列（僅限 A、U、G、C 字符）。
+2. 使用滑塊調整環境參數（鎂離子、溫度和擁擠度）。
+3. 點擊 **"Run Biophysical Audit"** 開始 JAX 物理內核計算。
+4. 在儀表板面板中查看 ΔG 和動力學速率結果。
+
 ## 計算方法論
 本應用程序採用 **粗粒化 (Coarse-Grained)** 模型：
 1. **可微物理**: 計算自由能梯度以識別穩定的構象。
